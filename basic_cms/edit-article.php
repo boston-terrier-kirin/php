@@ -1,7 +1,12 @@
 <?php
-require "includes/db.php";
-require "includes/util.php";
-require "includes/article.php";
+require "classes/Database.php";
+require "classes/Auth.php";
+require "classes/Util.php";
+require "classes/Article.php";
+require "classes/ArticleImage.php";
+
+session_start();
+Auth::requireLogin();
 
 $method = $_SERVER["REQUEST_METHOD"];
 $errors = [];
@@ -20,62 +25,49 @@ if (!$id) {
 }
 
 if ($method == "GET") {
-    $conn = getConnection();
-    $article = getArticle($conn, $id);
+    $db = new Database();
+    $conn = $db->getConnection();
+    $article = Article::getById($conn, $id);
+    $images = ArticleImage::getImagesByArticleId($conn, $id);
     
     $title = $article["title"];
     $content = $article["content"];
     $publishedAt = $article["published_at"];
 }
 
-if (isset($_POST["save"])) {
+if (isset($_POST["save"])) { 
     $title = $_POST["title"];
     $content = $_POST["content"];
     $publishedAt = $_POST["published_at"];
-    $publishedAt = convertDateTimeToDbFormat($publishedAt);
+    $publishedAt = Util::convertDateTimeToDbFormat($publishedAt);
+    $deleteImage = $_POST["deleteImage"];
 
-    $errors = validateArticle($title, $content, $publishedAt);
+    // TODO: 入力チェックエラーになって再表示する場合に、$imagesがなくてエラーになる。仕方がないので再取得。
+    $db = new Database();
+    $conn = $db->getConnection();
+    $images = ArticleImage::getImagesByArticleId($conn, $id);
+
+    $errors = Article::validate($title, $content, $publishedAt);
 
     if (empty($errors)) {
-        $sql = "update article
-                   set title = ?
-                      ,content = ?
-                      ,published_at = ?
-                 where id = ?";
-
-        $conn = getConnection();
-        $stmt = mysqli_prepare($conn, $sql);
-
-        if ($stmt === false) {
-            echo mysqli_error($conn);
-        } else {
-            if ($publishedAt == "") {
-                $publishedAt = null;
-            }
-            
-            mysqli_stmt_bind_param($stmt,
-                                    "sssi",
-                                    $title, $content, $publishedAt, $id);
-
-            if (mysqli_stmt_execute($stmt)) {
-                redirect("/article.php?id=$id");
-            } else {
-                echo mysqli_stmt_error($conn);
-            }
-        }
+        $db = new Database();
+        $conn = $db->getConnection();
+        Article::update($conn, $id, $title, $content, $publishedAt);
+        Util::redirect("/article.php?id=$id");
     }
 }
 ?>
 
 <?php require("includes/header.php"); ?>
 
-<header class="container mb-3">
-    <h1>My blog</h1>
-</header>
-
 <div class="container">
     <?php require("includes/error.php"); ?>
-    <?php require("includes/article-form.php"); ?>
+    <div class="card">
+        <div class="card-header">Edit Article</div>
+        <div class="card-body">
+            <?php require("includes/article-form.php"); ?>
+        </card>
+    </div>
 </div>
 
 <?php require("includes/footer.php"); ?>

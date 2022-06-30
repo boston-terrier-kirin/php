@@ -1,13 +1,12 @@
 <?php
-require "includes/db.php";
-require "includes/auth.php";
-require "includes/util.php";
-require "includes/article.php";
+require "classes/Database.php";
+require "classes/Auth.php";
+require "classes/Util.php";
+require "classes/Article.php";
+require "classes/ArticleImage.php";
 
 session_start();
-if (!isLoggedIn()) {
-    redirect("/login.php");
-}
+Auth::requireLogin();
 
 $errors = [];
 $title = "";
@@ -19,48 +18,51 @@ if (isset($_POST["save"])) {
     $title = $_POST["title"];
     $content = $_POST["content"];
     $publishedAt = $_POST["published_at"];
-    $publishedAt = convertDateTimeToDbFormat($publishedAt);
-
-    $errors = validateArticle($title, $content, $publishedAt);
+    $publishedAt = Util::convertDateTimeToDbFormat($publishedAt);
+  
+    $errors = Article::validate($title, $content, $publishedAt);
+    $error = $_FILES["upload_file"]["error"];
+    if ($error == UPLOAD_ERR_NO_FILE) {
+        $errors[] = "No images.";
+    }
 
     if (empty($errors)) {
-        $sql = "insert into article(title, content, published_at)
-                values(?, ?, ?);";
+        $db = new Database();
+        $conn = $db->getConnection();
+        $id = Article::insert($conn, $title, $content, $publishedAt);
 
-        $conn = getConnection();
-        $stmt = mysqli_prepare($conn, $sql);
+        $destinationDir = __dir__ . "/uploads/$id/";
+        if (!file_exists($destinationDir)) {
+            mkdir($destinationDir);
+        }
 
-        if ($stmt === false) {
-            echo mysqli_error($conn);
-        } else {
-            if ($publishedAt == "") {
-                $publishedAt = null;
-            }
-            
-            mysqli_stmt_bind_param($stmt,
-                                    "sss",
-                                    $title, $content, $publishedAt);
+        $fileCount = count($_FILES["upload_file"]["name"]);
 
-            if (mysqli_stmt_execute($stmt)) {
-                $id = mysqli_insert_id($conn);
-                redirect("/article.php?id=$id");
-            } else {
-                echo mysqli_stmt_error($conn);
+        if ($_FILES["upload_file"]["name"][0] != "") {
+            for ($i = 0; $i < $fileCount; $i ++) {
+                $destination = $destinationDir . $_FILES["upload_file"]["name"][$i];
+                $tmpName = $_FILES["upload_file"]["tmp_name"][$i];
+                move_uploaded_file($tmpName, $destination);
+        
+                ArticleImage::insertImage($conn, $id, $_FILES["upload_file"]["name"][$i]);
             }
         }
+
+        Util::redirect("/article.php?id=$id");
     }
 }
 ?>
 
 <?php require("includes/header.php"); ?>
-
-<header class="container mb-3">
-    <h1>My blog</h1>
-</header>
-    
+   
 <div class="container">
     <?php require("includes/error.php"); ?>
-    <?php require("includes/article-form.php"); ?>
+    <div class="card">
+        <div class="card-header">New Article</div>
+        <div class="card-body">
+            <?php require("includes/article-form.php"); ?>
+        </card>
+    </div>
 </div>
 
 <?php require("includes/footer.php"); ?>

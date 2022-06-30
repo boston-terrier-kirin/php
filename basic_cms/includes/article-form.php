@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label class="form-label" for="title">Title</label>
         <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($title); ?>" />
@@ -9,16 +9,41 @@
     </div>
     <div class="mb-3">
         <label class="form-label" for="published_at">Publication date and time</label>
-        <input type="datetime-local" id="published_at" name="published_at" class="form-control" placeholder="申請日" value="<?= htmlspecialchars(covertDateTimeToHtmlFormat($publishedAt)); ?>" />
+        <input type="datetime-local" id="published_at" name="published_at" class="form-control" placeholder="申請日" value="<?= htmlspecialchars(Util::covertDateTimeToHtmlFormat($publishedAt)); ?>" />
     </div>
+    <div class="mb-2">
+        <label class="form-label" for="upload_file">Image</label>
+        <input type="file" multiple id="upload_file" name="upload_file[]" class="form-control" placeholder="Upload File" value="" />
+    </div>
+    <?php if ($mode == "edit"): ?>
+        <div class="mb-4">
+            <ul class="list-group">
+                <?php
+                    foreach ($images as $image) {
+                        $checked = "";
+                        if (isset($deleteImage) && in_array($image["id"], $deleteImage)) {
+                            $checked = "checked";
+                        }
+                ?>
+                    <li class="list-group-item d-flex">
+                        <a class="link-dark me-auto" style="text-decoration: none" href="download.php?article_id=<?= $id; ?>&image_id=<?= $image["id"] ?>">
+                            <i class="bi bi-download"></i> <?= $image["file_name"] ?>
+                        </a>
+                        <input class="form-check-input" type="checkbox" name="deleteImage[]" value="<?= $image["id"] ?>" <?= $checked ?>/> 
+                        <label class="form-check-label">Delete</label>
+                    </li>    
+                <?php } ?>
+            </ul>
+        </div>
+    <?php endif ?>
 
     <?php if ($mode == "new"): ?>
-        <a class="btn btn-secondary" href="index.php">Back</a>
+        <a class="btn btn-secondary" href="index.php"><i class="bi bi-arrow-return-left"></i> Back</a>
     <?php endif ?>
 
     <?php if ($mode == "edit"): ?>
-        <a class="btn btn-secondary" href="article.php?id=<?= $id ?>">Back</a>
+        <a class="btn btn-secondary" href="article.php?id=<?= $id ?>"><i class="bi bi-arrow-return-left"></i> Back</a>
     <?php endif ?>
 
-    <button class="btn btn-primary" name="save">Save</button>
+    <button class="btn btn-primary" name="save"><i class="bi bi-save"></i> Save</button>
 </form>
