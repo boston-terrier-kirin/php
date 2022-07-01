@@ -40,7 +40,10 @@ if (isset($_POST["save"])) {
     $content = $_POST["content"];
     $publishedAt = $_POST["published_at"];
     $publishedAt = Util::convertDateTimeToDbFormat($publishedAt);
-    $deleteImage = $_POST["deleteImage"];
+    $uploadFile = $_FILES["upload_file"];
+    if (isset($_POST["deleteImage"])) {
+        $deleteImage = $_POST["deleteImage"];
+    }
 
     // TODO: 入力チェックエラーになって再表示する場合に、$imagesがなくてエラーになる。仕方がないので再取得。
     $db = new Database();
@@ -53,6 +56,13 @@ if (isset($_POST["save"])) {
         $db = new Database();
         $conn = $db->getConnection();
         Article::update($conn, $id, $title, $content, $publishedAt);
+
+        if ($deleteImage) {
+            ArticleImage::deleteImage($conn, $deleteImage);
+        }
+
+        ArticleImage::uploadImage($conn, $id, $uploadFile);
+
         Util::redirect("/article.php?id=$id");
     }
 }

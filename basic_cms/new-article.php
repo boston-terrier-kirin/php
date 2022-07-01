@@ -19,6 +19,7 @@ if (isset($_POST["save"])) {
     $content = $_POST["content"];
     $publishedAt = $_POST["published_at"];
     $publishedAt = Util::convertDateTimeToDbFormat($publishedAt);
+    $uploadFile = $_FILES["upload_file"];
   
     $errors = Article::validate($title, $content, $publishedAt);
     $error = $_FILES["upload_file"]["error"];
@@ -30,23 +31,7 @@ if (isset($_POST["save"])) {
         $db = new Database();
         $conn = $db->getConnection();
         $id = Article::insert($conn, $title, $content, $publishedAt);
-
-        $destinationDir = __dir__ . "/uploads/$id/";
-        if (!file_exists($destinationDir)) {
-            mkdir($destinationDir);
-        }
-
-        $fileCount = count($_FILES["upload_file"]["name"]);
-
-        if ($_FILES["upload_file"]["name"][0] != "") {
-            for ($i = 0; $i < $fileCount; $i ++) {
-                $destination = $destinationDir . $_FILES["upload_file"]["name"][$i];
-                $tmpName = $_FILES["upload_file"]["tmp_name"][$i];
-                move_uploaded_file($tmpName, $destination);
-        
-                ArticleImage::insertImage($conn, $id, $_FILES["upload_file"]["name"][$i]);
-            }
-        }
+        ArticleImage::uploadImage($conn, $id, $uploadFile);
 
         Util::redirect("/article.php?id=$id");
     }

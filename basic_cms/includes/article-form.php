@@ -30,11 +30,13 @@
                             <i class="bi bi-download"></i> <?= $image["file_name"] ?>
                         </a>
                         <input class="form-check-input" type="checkbox" name="deleteImage[]" value="<?= $image["id"] ?>" <?= $checked ?>/> 
-                        <label class="form-check-label">Delete</label>
+                        <label class="form-check-label"> Delete </label>
                     </li>    
                 <?php } ?>
             </ul>
         </div>
+    <?php else: ?>
+        <div class="mb-4"></div>
     <?php endif ?>
 
     <?php if ($mode == "new"): ?>
