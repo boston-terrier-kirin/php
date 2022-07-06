@@ -1,7 +1,7 @@
 <?php require APPROOT . "/views/inc/header.php"; ?>
-    <div class="bg-light p-4 p-sm-5 my-4 rounded">
+    <div class="bg-light p-2 rounded">
         <div class="container">
-            <h1 class="display-3"><?= $data["title"] ?></h1>
+            <h1 class="display-4"><?= $data["title"] ?></h1>
             <p class="lead"><?= $data["description"] ?></p>
         </div>
     </div>

@@ -8,12 +8,12 @@
                 <p>Please fill in your credentials to log in</p>
                 <form action="<?= URLROOT?>/users/login" method="post">
                     <div class="form-group mb-2">
-                        <label for="email">Email: <sup>*</sup></label>
+                        <label class="form-label" for="email">Email: <sup>*</sup></label>
                         <input class="form-control <?= !empty($data["email_err"]) ? "is-invalid" : "" ?>" type="email" name="email" id="email" value="<?= $data['email'] ?>"/>
                         <span class="invalid-feedback"><?= $data["email_err"] ?></span>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="password">Password: <sup>*</sup></label>
+                        <label class="form-label" for="password">Password: <sup>*</sup></label>
                         <input class="form-control <?= !empty($data["password_err"]) ? "is-invalid" : "" ?>" type="password" name="password" id="password" value="<?= $data['password'] ?>"/>
                         <span class="invalid-feedback"><?= $data["password_err"] ?></span>
                     </div>
