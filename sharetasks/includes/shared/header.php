@@ -13,7 +13,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <div class="container d-flex">
-            <a class="navbar-brand mb-0 h1 me-auto" href="<?= URLROOT ?>/home"><i class="bi bi-list-task"></i> <?= SITENAME ?></a>
+            <a class="navbar-brand mb-0 h1 me-auto" href="<?= URLROOT ?>/task/home"><i class="bi bi-list-task"></i> <?= SITENAME ?></a>
             <ul class="navbar-nav align-items-center">
                 <?php if (Auth::isLoggedIn()): ?>
                     <li class="nav-item text-light me-3">

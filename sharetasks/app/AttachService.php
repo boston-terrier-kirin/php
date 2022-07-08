@@ -6,6 +6,13 @@ class AttachService {
         $this->db = new Database();
     }
 
+    public static function fileAttached($files) {
+        if ($files["name"][0] != "") {
+            return true;
+        }
+        return false;
+    }
+
     public function uploadFile($taskId, $files) {
         $fileCount = count($files["name"]);
 

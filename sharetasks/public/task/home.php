@@ -48,7 +48,7 @@ $tasks = $taskService->getAll();
                             </a>
                         </td>
                         <td><?= htmlspecialchars($task['register_user']); ?></td>
-                        <td><?= htmlspecialchars($task['register_date']); ?></td>
+                        <td class="text-nowrap"><?= htmlspecialchars($task['register_date']); ?></td>
                         <td><?= htmlspecialchars($task['assignee']); ?></td>
                         <td><?= htmlspecialchars($task['target_system']); ?></td>
                         <td><?= htmlspecialchars($task['title']); ?></td>
