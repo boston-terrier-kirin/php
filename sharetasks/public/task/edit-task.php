@@ -47,12 +47,12 @@ if (isset($_POST["save"])) {
 
         $attachService->uploadFile($taskId, $data["upload_file"]);
 
-        Util::registerMessage("task_edited", "タスクを更新しました。");
+        Util::registerMessage("タスクを更新しました。");
         Util::redirect("/task/home");
     } else {
-        $globalErrors[] = "入力内容を見直してください。";
+        Util::registerErrorMessage("入力内容を見直してください。");
         if (AttachService::fileAttached($data["upload_file"])) {
-            $globalErrors[] = "添付ファイルは再選択が必要です。ご注意ください。";
+            Util::registerErrorMessage("添付ファイルは再選択が必要です。ご注意ください。");
         }
     }
 }
@@ -63,7 +63,7 @@ if (isset($_POST["delete"])) {
     $taskService = new TaskService();
     $taskService->delete($taskId);
 
-    Util::registerMessage("task_edited", "タスクを削除しました。");
+    Util::registerMessage("タスクを削除しました。");
     Util::redirect("/task/home");
 } 
 ?>
@@ -71,7 +71,7 @@ if (isset($_POST["delete"])) {
 <?php require_once APPROOT . "/includes/shared/header.php"; ?>
 
 <div class="container">
-    <?php require_once APPROOT . "/includes/shared/global-error.php"; ?>
+    <?php require_once APPROOT . "/includes/shared/message.php"; ?>
     <div class="card mb-3">
         <div class="card-header">タスクの更新</div>
         <div class="card-body">

@@ -24,35 +24,38 @@ class Util {
         return $datetime;
     }
 
-    // public static function getUrl() {
-    //     if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] != 'off') {
-    //         $protocol = "https";
-    //     } else {
-    //         $protocol = "http";
-    //     }
-
-    //     // TODO: basic_cmsをどこから取得するか
-    //     return $protocol . "://" . $_SERVER["HTTP_HOST"] . "/basic_cms";
-    // }
-
     public static function redirect($url) {
         $redirectTo = URLROOT . $url;
         header("Location: $redirectTo", true, 307);
         exit;
     }
 
-    public static function registerMessage($name, $message, $className = "alert alert-success p-2") {
-        $_SESSION[$name] = $message;
-        $_SESSION[$name . "_class"] = $className;
-    }
-    
-    public static function showMessage($name) {
-        if (!empty($_SESSION[$name])) {
-            $className = !empty($_SESSION[$name . "_class"]) ? $_SESSION[$name . "_class"] : "";
-            echo "<div class='" . $className . "' id='msg-flash'><i class='bi bi-info-circle-fill'></i> " . $_SESSION[$name] . "</div>";
-    
-            unset($_SESSION[$name]);
-            unset($_SESSION[$name . "_class"]);
+    public static function registerMessage($message) {
+        $messages = [];
+        if (!empty($_SESSION["SUCCESS_MESSAGE"])) {
+            $messages = $_SESSION["SUCCESS_MESSAGE"];
         }
+        $messages[] = $message;
+
+        $_SESSION["SUCCESS_MESSAGE"] = $messages;
+    }
+
+    public static function registerErrorMessage($message) {
+        $errors = [];
+        if (!empty($_SESSION["ERROR_MESSAGE"])) {
+            $errors = $_SESSION["ERROR_MESSAGE"];
+        }
+        $errors[] = $message;
+
+        $_SESSION["ERROR_MESSAGE"] = $errors;
+    }
+
+    public static function escape($value) {
+        // PHP8からhtmlspecialcharsにnullを渡すと警告が出てしまうので、ここでチェックする。
+        if (is_null($value)) {
+            return "";
+        }
+
+        return htmlspecialchars($value);
     }
 }

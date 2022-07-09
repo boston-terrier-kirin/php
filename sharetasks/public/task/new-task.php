@@ -30,12 +30,12 @@ if (isset($_POST["save"])) {
         $attachService = new AttachService();
         $attachService->uploadFile($taskId, $data["upload_file"]);
 
-        Util::registerMessage("task_added", "新しいタスクを追加しました。");
+        Util::registerMessage("新しいタスクを追加しました。");
         Util::redirect("/task/home");
     } else {
-        $globalErrors[] = "入力内容を見直してください。";
+        Util::registerErrorMessage("入力内容を見直してください。");
         if (AttachService::fileAttached($data["upload_file"])) {
-            $globalErrors[] = "添付ファイルは再選択が必要です。ご注意ください。";
+            Util::registerErrorMessage("添付ファイルは再選択が必要です。ご注意ください。");
         }
     }
 }
@@ -44,7 +44,7 @@ if (isset($_POST["save"])) {
 <?php require_once APPROOT . "/includes/shared/header.php"; ?>
    
 <div class="container">
-    <?php require_once APPROOT . "/includes/shared/global-error.php"; ?>
+    <?php require_once APPROOT . "/includes/shared/message.php"; ?>
     <div class="card mb-3">
         <div class="card-header">タスクの新規作成</div>
         <div class="card-body">

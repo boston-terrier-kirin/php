@@ -19,7 +19,7 @@ if (isset($_POST["register"])) {
         $userService = new UserService();
         $userService->register($username, $email, $password);
 
-        Util::registerMessage("register_success", "You are registered and can log in");
+        Util::registerMessage("You are registered and can log in");
         Util::redirect("/user/login");
     }
 }
@@ -30,7 +30,7 @@ if (isset($_POST["register"])) {
 <div class="container">
     <div class="row">
         <div class="col-md-6 mx-auto">
-            <?php require_once APPROOT . "/includes/shared/global-error.php"; ?>
+            <?php require_once APPROOT . "/includes/shared/message.php"; ?>
             <div class="card bg-light">
                 <div class="card-body">
                     <h2>Create An Account</h2>
@@ -38,24 +38,24 @@ if (isset($_POST["register"])) {
                     <form method="post">
                         <div class="mb-3">
                             <label class="form-label" for="username">Username: <sup>*</sup></label>
-                            <input type="text" id="username" name="username" class="form-control" value="<?= htmlspecialchars($username); ?>" />
+                            <input type="text" id="username" name="username" class="form-control" value="<?= Util::escape($username); ?>" />
                             <span id="username_err" class="invalid-feedback"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="email">Email: <sup>*</sup></label>
-                            <input type="text" id="email" name="email" class="form-control" value="<?= htmlspecialchars($email); ?>" />
+                            <input type="text" id="email" name="email" class="form-control" value="<?= Util::escape($email); ?>" />
                             <span id="email_err" class="invalid-feedback"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="password">Password: <sup>*</sup></label>
                             <input type="password" id="password" name="password" class="form-control"
-                                    value="<?= htmlspecialchars($password); ?>" />
+                                    value="<?= Util::escape($password); ?>" />
                             <span id="password_err" class="invalid-feedback"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="confirm_password">Confirm Password: <sup>*</sup></label>
                             <input type="password" id="confirm_password" name="confirm_password" class="form-control"
-                                    value="<?= htmlspecialchars($confirmPassword); ?>" />
+                                    value="<?= Util::escape($confirmPassword); ?>" />
                             <span id="confirm_password_err" class="invalid-feedback"></span>
                         </div>
                         <div class="row">

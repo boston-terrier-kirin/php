@@ -2,6 +2,13 @@
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
 <script src="<?= URLROOT ?>/js/main.js"></script>
 <script>
+    const successMessage = document.getElementById("success-msg");
+    if (successMessage) {
+        setTimeout(function() {
+            successMessage.classList.add("d-none");
+        }, 3000);
+    }
+
     <?php if (isset($errors) && !empty($errors)) : ?>
         const errors = JSON.parse('<?= json_encode($errors); ?>');
         for (const key of Object.keys(errors)) {

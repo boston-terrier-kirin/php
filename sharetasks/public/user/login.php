@@ -16,7 +16,7 @@ if (isset($_POST["login"])) {
         $_SESSION["is_logged_in"] = true;
         $_SESSION["username"] = $username;
 
-        Util::registerMessage("welcome", "Welcome back, $username");
+        Util::registerMessage("Welcome back, $username");
         Util::redirect("/task/home");
     } else {
         $errors["username"] = "Invalid Credentials.";
@@ -30,8 +30,7 @@ if (isset($_POST["login"])) {
 <div class="container">
     <div class="row">
         <div class="col-md-6 mx-auto">
-            <?php Util::showMessage("register_success") ?>
-            <?php require_once APPROOT . "/includes/shared/global-error.php"; ?>
+            <?php require_once APPROOT . "/includes/shared/message.php"; ?>
             <div class="card bg-light">
                 <div class="card-body">
                     <h2>Login</h2>
@@ -39,13 +38,13 @@ if (isset($_POST["login"])) {
                     <form method="post">
                         <div class="mb-3">
                             <label class="form-label" for="username">Username: <sup>*</sup></label>
-                            <input type="text" id="username" name="username" class="form-control" value="<?= htmlspecialchars($username); ?>" />
+                            <input type="text" id="username" name="username" class="form-control" value="<?= Util::escape($username); ?>" />
                             <span id="username_err" class="invalid-feedback"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="password">Password: <sup>*</sup></label>
                             <input type="password" id="password" name="password" class="form-control"
-                                    value="<?= htmlspecialchars($password); ?>" />
+                                    value="<?= Util::escape($password); ?>" />
                             <span id="password_err" class="invalid-feedback"></span>
                         </div>
                         <div class="row">
