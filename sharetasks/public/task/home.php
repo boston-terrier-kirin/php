@@ -22,9 +22,26 @@ $tasks = $taskService->getAll();
 <?php require_once APPROOT . "/includes/shared/script.php"; ?>
 
 <script>
-    function linkFormatter(cell, formatterParams){
+    function formatTaskId(cell, formatterParams){
         const value = cell.getValue();
         return "<a href='<?= URLROOT ?>/task/edit-task?task_id=" + value +  "'>" + value + "</a>";
+    }
+    
+    function formatStatus(cell, formatterParams){
+        const value = cell.getValue();
+        if (!value) {
+            return "";
+        }
+
+        if (value === "plan") {
+            return "<span class='badge bg-secondary'>" + value + "</span>";
+        }
+        if (value === "ongoing") {
+            return "<span class='badge bg-primary'>" + value + "</span>";
+        }
+        if (value === "complete") {
+            return "<span class='badge bg-success'>" + value + "</span>";
+        }
     }
 
     const table = new Tabulator("#task-table", {
@@ -32,11 +49,15 @@ $tasks = $taskService->getAll();
         ajaxURL: "<?= URLROOT ?>/api/task",
         layoutColumnsOnNewData: true,
         columnHeaderVertAlign: "bottom",
+        pagination:"local",
+        paginationSize:25,
+        paginationCounter:"rows",
+        selectable:true,
         columns: [
             {
                 title: "基本情報", cssClass: "bg-color1",
                 columns :[
-                    { title : "タスクID", field: "task_id", cssClass: "bg-color1", formatter: linkFormatter },
+                    { title : "タスクID", field: "task_id", cssClass: "bg-color1", formatter: formatTaskId },
                     { title : "登録者", field: "register_user", cssClass: "bg-color1" },
                     { title : "登録日", field: "register_date", cssClass: "bg-color1" },
                     { title : "担当者", field: "assignee", cssClass: "bg-color1" },
@@ -53,7 +74,7 @@ $tasks = $taskService->getAll();
             {
                 title: "進捗状況", cssClass: "bg-color3",
                 columns: [
-                    { title : "ステータス", field: "status", cssClass: "bg-color3" },
+                    { title : "ステータス", field: "status", cssClass: "bg-color3", formatter: formatStatus },
                     { title : "開始予定日", field: "plan_start_date", cssClass: "bg-color3" },
                     { title : "終了予定日", field: "plan_end_date", cssClass: "bg-color3" },
                     { title : "開始日", field: "actual_start_date", cssClass: "bg-color3" },

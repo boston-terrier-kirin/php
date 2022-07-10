@@ -21,6 +21,7 @@ class UserService {
             return false;
         }
 
+        // TODO:PHP5.4 にはpassword_verifyがない。
         return password_verify($password, $user["password"]);
     }
 
@@ -30,6 +31,7 @@ class UserService {
             values(:user_name, :email, :password) 
         ");
 
+        // TODO:PHP5.4 にはpassword_hashがない。
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         $this->db->bindValue(":user_name", $username);
