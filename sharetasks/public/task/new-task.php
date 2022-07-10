@@ -16,8 +16,10 @@ $mode = "new";
 if (isset($_POST["save"])) {
     $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-    foreach($_POST as $key => $value) { 
-        $data[$key] = $value;
+    foreach($_POST as $key => $value) {
+        if (isset($data[$key])) {
+            $data[$key] = $value;
+        } 
     }
     $data["upload_file"] = $_FILES["upload_file"];
 
@@ -25,11 +27,8 @@ if (isset($_POST["save"])) {
     $errors = $taskService->validate($data);
 
     if (empty($errors)) {
-        $taskId = $taskService->insert($data);
-    
-        $attachService = new AttachService();
-        $attachService->uploadFile($taskId, $data["upload_file"]);
-
+        $taskService->createTask($data);
+   
         Util::registerMessage("新しいタスクを追加しました。");
         Util::redirect("/task/home");
     } else {

@@ -6,6 +6,9 @@ Auth::requireLogin();
 $method = $_SERVER["REQUEST_METHOD"];
 $errors = [];
 $data = [];
+foreach(TaskService::$columnDef as $key => $def) {
+    $data[$key] = $def["initValue"];
+}
 $data["update_user"] = Auth::getUser();
 $mode = "edit";
 
@@ -25,12 +28,16 @@ if ($method == "GET") {
 if (isset($_POST["save"])) { 
     $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-    foreach($_POST as $key => $value) { 
-        $data[$key] = $value;
+    foreach($_POST as $key => $value) {
+        if (isset($data[$key])) {
+            $data[$key] = $value;
+        } 
     }
     $data["upload_file"] = $_FILES["upload_file"];
+    if (isset($_POST["delete_attach_ids"])) {
+        $data["delete_attach_ids"] = $_POST["delete_attach_ids"];
+    }
 
-    // TODO: 入力チェックエラーになって再表示する場合に、$attachesがなくてエラーになる。仕方がないので再取得。
     $attachService = new AttachService();
     $attaches = $attachService->getByTaskId($taskId);
     $data["attaches"] = $attaches;
@@ -39,13 +46,7 @@ if (isset($_POST["save"])) {
     $errors = $taskService->validate($data);
 
     if (empty($errors)) {
-        $taskService->update($taskId, $data);
-
-        if (isset($data["delete_attach_ids"])) {
-            $attachService->delete($data["delete_attach_ids"]);
-        }
-
-        $attachService->uploadFile($taskId, $data["upload_file"]);
+        $taskService->updateTask($taskId, $data);
 
         Util::registerMessage("タスクを更新しました。");
         Util::redirect("/task/home");

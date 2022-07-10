@@ -6,7 +6,7 @@ spl_autoload_register(function($className) {
 });
 
 function errorHandler($level, $message, $file, $line) {
-    error_log($message);
+    error_log("message: " . $message . " file: " . $file . " line: " . $line);
     throw new ErrorException($message, 0, $level, $file, $line);
 }
 set_error_handler("errorHandler");

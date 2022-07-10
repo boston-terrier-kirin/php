@@ -2,25 +2,33 @@
 require_once("../bootstrap.php");
 
 $errors = [];
-$username = "";
-$password = "";
+$data = [];
+foreach(UserService::$loginColumnDef as $key => $def) {
+    $data[$key] = $def["initValue"];
+}
 
 if (isset($_POST["login"])) {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+    foreach($data as $key => $value) {
+        $data[$key] = $_POST[$key];
+    }
 
     $userService = new UserService();
+    $errors = $userService->validate($data);
 
-    if ($userService->authenticate($username, $password)) {
-        session_regenerate_id(true);
-        $_SESSION["is_logged_in"] = true;
-        $_SESSION["username"] = $username;
+    if (empty($errors)) {
+        if ($userService->authenticate($data)) {
+            session_regenerate_id(true);
+            $_SESSION["is_logged_in"] = true;
+            $_SESSION["username"] = $data["username"];
 
-        Util::registerMessage("Welcome back, $username");
-        Util::redirect("/task/home");
-    } else {
-        $errors["username"] = "Invalid Credentials.";
-        $errors["password"] = "Invalid Credentials."; 
+            Util::registerMessage("Welcome back, " . $data['username']);
+            Util::redirect("/task/home");
+        } else {
+            $errors["username"] = "Invalid Credentials.";
+            $errors["password"] = "Invalid Credentials."; 
+        }
     }
 }
 ?>
@@ -38,13 +46,13 @@ if (isset($_POST["login"])) {
                     <form method="post">
                         <div class="mb-3">
                             <label class="form-label" for="username">Username: <sup>*</sup></label>
-                            <input type="text" id="username" name="username" class="form-control" value="<?= Util::escape($username); ?>" />
+                            <input type="text" id="username" name="username" class="form-control" value="<?= Util::escape($data["username"]); ?>" />
                             <span id="username_err" class="invalid-feedback"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="password">Password: <sup>*</sup></label>
                             <input type="password" id="password" name="password" class="form-control"
-                                    value="<?= Util::escape($password); ?>" />
+                                    value="<?= Util::escape($data["password"]); ?>" />
                             <span id="password_err" class="invalid-feedback"></span>
                         </div>
                         <div class="row">
