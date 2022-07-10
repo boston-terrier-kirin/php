@@ -11,6 +11,10 @@ class Auth {
     }
 
     public static function getUser() {
-        return $_SESSION["username"];
+        if (isset($_SESSION["username"])) {
+            return $_SESSION["username"];
+        }
+
+        return "anonymous";
     }
 }

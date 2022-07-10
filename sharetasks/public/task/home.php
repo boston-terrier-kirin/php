@@ -2,9 +2,6 @@
 require_once("../bootstrap.php");
 
 Auth::requireLogin();
-
-$taskService = new TaskService();
-$tasks = $taskService->getAll();
 ?>
 
 <?php require_once APPROOT . "/includes/shared/header.php"; ?>
@@ -47,11 +44,11 @@ $tasks = $taskService->getAll();
     const table = new Tabulator("#task-table", {
         height: window.innerHeight - 150,
         ajaxURL: "<?= URLROOT ?>/api/task",
+        pagination:true,
+        paginationMode:"remote",
+        paginationSize:25,
         layoutColumnsOnNewData: true,
         columnHeaderVertAlign: "bottom",
-        pagination:"local",
-        paginationSize:25,
-        paginationCounter:"rows",
         selectable:true,
         columns: [
             {

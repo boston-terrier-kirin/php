@@ -69,8 +69,20 @@ class Database {
     }
 
     public function execute() {
-        error_log($this->getSql());
-        return $this->stmt->execute();
+        $start = microtime(true);
+        $result = $this->stmt->execute();
+        $end = microtime(true);
+        
+        if (SQL_TRACE) {
+            $log = [
+                "user" => Auth::getUser(),
+                "exec_time" => $end - $start,
+                "sql" => $this->getSql()
+            ];
+            error_log(json_encode($log) . "\r\n", 3, SQL_TRACE_FILE);
+        }
+        
+        return $result;
     }
 
     public function fetch() {

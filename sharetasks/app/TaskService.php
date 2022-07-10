@@ -26,16 +26,28 @@ class TaskService {
         return $errors;
     }
 
-    public function getAll() {
+    public function getTasks($offset, $size) {
         $this->db->prepare("
             select *
               from tasks
-             order by register_date desc
+             order by task_id desc
+             limit $offset, $size
         ");
 
         $this->db->execute();
 
         return $this->db->fetchAll();
+    }
+
+    public function count() {
+        $this->db->prepare("
+            select count(*) cnt
+              from tasks
+        ");
+
+        $this->db->execute();
+
+        return $this->db->fetch();
     }
 
     public function getById($taskId) {
@@ -74,11 +86,6 @@ class TaskService {
     }
 
     private function insert($data) {
-        $sql = "
-            insert into tasks(register_user, register_date, assignee, target_system, title, content, status, plan_start_date, actual_start_date, plan_end_date, actual_end_date, comment, create_user, create_date)
-            values(:register_user, :register_date, :assignee, :target_system, :title, :content, :status, :plan_start_date, :actual_start_date, :plan_end_date, :actual_end_date, :comment, :create_user, current_timestamp)
-        ";
-
         $this->db->prepare("
             insert into tasks(register_user, register_date, assignee, target_system, title, content, status, plan_start_date, actual_start_date, plan_end_date, actual_end_date, comment, create_user, create_date)
             values(:register_user, :register_date, :assignee, :target_system, :title, :content, :status, :plan_start_date, :actual_start_date, :plan_end_date, :actual_end_date, :comment, :create_user, current_timestamp)
