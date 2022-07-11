@@ -14,8 +14,9 @@ class Database {
         $db_name = DB_NAME;
         $db_user = DB_USER;
         $db_pass = DB_PASS;
+        $db_charset = DB_CHARSET;
 
-        $dsn = "mysql:host=" . $db_host . ";dbname=" . $db_name . ";charset=utf8";
+        $dsn = "mysql:host=" . $db_host . ";dbname=" . $db_name . ";charset=" . $db_charset;
         $options = array(
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -64,8 +65,15 @@ class Database {
             }
         }
 
-        $this->params[$param] = $value;
-        $this->stmt->bindValue($param, $value, $type);
+        // TODO: PHP5.4では、日付型に "" をセットすると、0000-00-00 になってしまうので明示的にNULLをセット。
+        //       ただし、DBSCとの連携を考えるとこれは不都合。
+        if (is_null($value) || empty($value)) {
+            $this->params[$param] = null;
+            $this->stmt->bindValue($param, null, $type);
+        } else {
+            $this->params[$param] = $value;
+            $this->stmt->bindValue($param, $value, $type);            
+        }
     }
 
     public function execute() {

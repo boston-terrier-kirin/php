@@ -52,9 +52,9 @@
         <div class="col-sm col-lg-6 mb-3">
             <label class="form-label" for="status">ステータス</label>
             <select class="form-select" name="status" id="status">
-                    <option value="plan">予定</option>
-                    <option value="ongoing">進行中</option>
-                    <option value="complete">完了</option>
+                    <option value="予定">予定</option>
+                    <option value="進行中">進行中</option>
+                    <option value="完了">完了</option>
             </select>
             <span id="status_err" class="invalid-feedback"></span>
         </div>

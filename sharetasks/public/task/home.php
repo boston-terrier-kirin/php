@@ -4,18 +4,38 @@ require_once("../bootstrap.php");
 Auth::requireLogin();
 
 if (isset($_GET["download_excel"])) {
-    $filePath = UPLOAD_FOLDER . "/94/abhishek-tiwari-QOR1p5aaFMQ-unsplash.jpg";
+    require_once APPROOT . '/lib/PHPExcel-1.8/Classes/PHPExcel.php';
 
-    $media_type = (new finfo())->file($filePath, FILEINFO_MIME_TYPE) ?? 'application/octet-stream';
+    // 各種定義
+    $inputFileType = 'Excel2007';
+    $inputFileName = APPROOT . '/public/task/template/taskList.xlsx';
+
+    $objPHPExcelReader = PHPExcel_IOFactory::createReader($inputFileType);
+    $objPHPExcel = $objPHPExcelReader->load($inputFileName);
     
-    header('Content-Type: ' . $media_type);
-    header('X-Content-Type-Options: nosniff');
-    header('Content-Length: ' . filesize($filePath));
-    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+    $objSheet = $objPHPExcel->setActiveSheetIndex(0);
+    $objSheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize(9);
+
+    $taskService = new TaskService();
+    $tasks = $taskService->getAll();
+
+    $startRowIdx = 5;
+    foreach($tasks as $task) {
+        foreach(TaskService::$excelColumnDef as $key => $def) {
+            $objSheet->setCellValue($def["excelCol"] . $startRowIdx, $task[$key]);
+        }
+        $startRowIdx ++;
+    }
     
-    while (ob_get_level()) ob_end_clean();
-    readfile($filePath);
-    
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="taskList.xlsx"');
+
+    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    setcookie("downloadToken", "Y");
+
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $objWriter->save('php://output');
+
     exit;
 }
 ?>
@@ -35,7 +55,7 @@ if (isset($_GET["download_excel"])) {
     <div id="task-table"></div>
 </div>
 
-<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="searchModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -48,12 +68,16 @@ if (isset($_GET["download_excel"])) {
                         <input type="text" class="form-control" name="status" id="status">
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button id="download_excel" name="download_excel" data-bs-dismiss="modal" class="btn btn-success">Excelダウンロード</button>
+                        <button id="download_excel" name="download_excel" class="btn btn-success">Excelダウンロード</button>
+                        <button id="downloading_excel" class="btn btn-success d-none" type="button" disabled>
+                          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                          Downloading...
+                        </button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                <button id="cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
             </div>
         </div>
   </div>
@@ -62,6 +86,42 @@ if (isset($_GET["download_excel"])) {
 <?php require_once APPROOT . "/includes/shared/script.php"; ?>
 
 <script>
+    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    function getCookie( name ) {
+        var parts = document.cookie.split(name + "=");
+        if (parts.length == 2) {
+            return parts.pop().split(";").shift();
+        }
+    }
+
+    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
+
+    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    document.getElementById("download_excel").addEventListener("click", function() {
+        const download = document.getElementById("download_excel");
+        const downloading = document.getElementById("downloading_excel");
+        const cancel = document.getElementById("cancel");
+
+        download.classList.add("d-none");
+        downloading.classList.remove("d-none");
+        cancel.disabled = true;
+
+        downloadTimer = window.setInterval( function() {
+            var token = getCookie( "downloadToken" );
+            if(token == "Y") {
+                searchModal.hide();
+                
+                download.classList.remove("d-none");
+                downloading.classList.add("d-none");
+                cancel.disabled = false;
+                
+                document.cookie = "downloadToken=; max-age=0";
+
+                window.clearInterval( downloadTimer );
+            }
+        }, 1000 );
+    });
 
     function formatTaskId(cell, formatterParams){
         const value = cell.getValue();
@@ -74,13 +134,13 @@ if (isset($_GET["download_excel"])) {
             return "";
         }
 
-        if (value === "plan") {
+        if (value === "予定") {
             return "<span class='badge bg-secondary'>" + value + "</span>";
         }
-        if (value === "ongoing") {
+        if (value === "進行中") {
             return "<span class='badge bg-primary'>" + value + "</span>";
         }
-        if (value === "complete") {
+        if (value === "完了") {
             return "<span class='badge bg-success'>" + value + "</span>";
         }
     }
@@ -105,7 +165,7 @@ if (isset($_GET["download_excel"])) {
                 ]
             },
             {
-                title: "作業内容", cssClass: "bg-color2",
+                title: "作業情報", cssClass: "bg-color2",
                 columns: [
                     { title : "対象システム", field: "target_system", cssClass: "bg-color2" },
                     { title : "タイトル", field: "title", cssClass: "bg-color2" },
@@ -113,7 +173,7 @@ if (isset($_GET["download_excel"])) {
                 ]
             },
             {
-                title: "進捗状況", cssClass: "bg-color3",
+                title: "進捗情報", cssClass: "bg-color3",
                 columns: [
                     { title : "ステータス", field: "status", cssClass: "bg-color3", formatter: formatStatus },
                     { title : "開始予定日", field: "plan_start_date", cssClass: "bg-color3" },

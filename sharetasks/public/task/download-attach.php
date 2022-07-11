@@ -13,7 +13,8 @@ $fileName = $attach["file_name"];
 $filePath = UPLOAD_FOLDER . "/$taskId/$fileName";
 
 // TODO: PHP5.4 ではfinfoを動かすのに設定が必要になりそう。
-$media_type = (new finfo())->file($filePath, FILEINFO_MIME_TYPE) ?? 'application/octet-stream';
+// $media_type = (new finfo())->file($filePath, FILEINFO_MIME_TYPE) ?? 'application/octet-stream';
+$media_type = 'application/octet-stream';
 
 header('Content-Type: ' . $media_type);
 header('X-Content-Type-Options: nosniff');

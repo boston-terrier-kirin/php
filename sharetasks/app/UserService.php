@@ -54,7 +54,8 @@ class UserService {
         }
 
         // TODO:PHP5.4 にはpassword_verifyがない。
-        return password_verify($data["password"], $user["password"]);
+        // return password_verify($data["password"], $user["password"]);
+        return $data["password"] == $user["password"];
     }
 
     public function register($data) {
@@ -64,7 +65,8 @@ class UserService {
         ");
 
         // TODO:PHP5.4 にはpassword_hashがない。
-        $password = password_hash($data["password"], PASSWORD_DEFAULT);
+        // $password = password_hash($data["password"], PASSWORD_DEFAULT);
+        $password = $data["password"];
 
         $this->db->bindValue(":user_name", $data["username"]);
         $this->db->bindValue(":email", $data["email"]);

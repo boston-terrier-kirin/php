@@ -17,6 +17,26 @@ class TaskService {
         "comment" => ["name" => "コメント", "initValue" => "", "required" => false],
     ];
 
+    public static $excelColumnDef = [
+        "task_id" => ["excelCol" => "B"],
+        "register_user" => ["excelCol" => "C"],
+        "register_date" => ["excelCol" => "D"],
+        "assignee" => ["excelCol" => "E"],
+        "target_system" => ["excelCol" => "F"],
+        "title" => ["excelCol" => "G"],
+        "content" => ["excelCol" => "H"],
+        "status" => ["excelCol" => "I"],
+        "plan_start_date" => ["excelCol" => "J"],
+        "actual_start_date" => ["excelCol" => "K"],
+        "plan_end_date" => ["excelCol" => "L"],
+        "actual_end_date" => ["excelCol" => "M"],
+        "comment" => ["excelCol" => "N"],
+        "create_user" => ["excelCol" => "O"],
+        "create_date" => ["excelCol" => "P"],
+        "update_user" => ["excelCol" => "Q"],
+        "update_date" => ["excelCol" => "R"],
+    ];
+
     public function __construct() {
         $this->db = new Database();
     }
@@ -24,6 +44,34 @@ class TaskService {
     public function validate($data) {
         $errors = Validator::validate(TaskService::$columnDef, $data);
         return $errors;
+    }
+
+    public function getAll() {
+        $this->db->prepare("
+            select task_id
+                ,register_user
+                ,register_date
+                ,assignee
+                ,target_system
+                ,title
+                ,content
+                ,status
+                ,plan_start_date
+                ,plan_end_date
+                ,actual_start_date
+                ,actual_end_date
+                ,comment
+                ,create_user
+                ,create_date
+                ,update_user
+                ,update_date
+            from tasks
+            order by task_id desc
+        ");
+
+        $this->db->execute();
+
+        return $this->db->fetchAll();
     }
 
     public function getTasks($offset, $size) {
