@@ -6,7 +6,6 @@ Auth::requireLogin();
 if (isset($_GET["download_excel"])) {
     require_once APPROOT . '/lib/PHPExcel-1.8/Classes/PHPExcel.php';
 
-    // 各種定義
     $inputFileType = 'Excel2007';
     $inputFileName = APPROOT . '/public/task/template/taskList.xlsx';
 
@@ -30,10 +29,10 @@ if (isset($_GET["download_excel"])) {
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="taskList.xlsx"');
 
-    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    // TODO: まだ実験段階 -> ダウンロード完了したらモーダルを閉じる。
     setcookie("downloadToken", "Y");
 
-    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, $inputFileType);
     $objWriter->save('php://output');
 
     exit;
@@ -86,7 +85,7 @@ if (isset($_GET["download_excel"])) {
 <?php require_once APPROOT . "/includes/shared/script.php"; ?>
 
 <script>
-    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    // TODO: まだ実験段階 -> ダウンロード完了したらモーダルを閉じる。
     function getCookie( name ) {
         var parts = document.cookie.split(name + "=");
         if (parts.length == 2) {
@@ -94,10 +93,10 @@ if (isset($_GET["download_excel"])) {
         }
     }
 
-    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    // TODO: まだ実験段階 -> ダウンロード完了したらモーダルを閉じる。
     const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
 
-    // TODO: まだ実験段階 -> ダウンロード完了したらスピナーを閉じる。
+    // TODO: まだ実験段階 -> ダウンロード完了したらモーダルを閉じる。
     document.getElementById("download_excel").addEventListener("click", function() {
         const download = document.getElementById("download_excel");
         const downloading = document.getElementById("downloading_excel");
@@ -107,9 +106,11 @@ if (isset($_GET["download_excel"])) {
         downloading.classList.remove("d-none");
         cancel.disabled = true;
 
+        trial = 10;
+
         downloadTimer = window.setInterval( function() {
-            var token = getCookie( "downloadToken" );
-            if(token == "Y") {
+            const token = getCookie( "downloadToken" );
+            if(token == "Y" || trial == 0) {
                 searchModal.hide();
                 
                 download.classList.remove("d-none");
@@ -120,6 +121,7 @@ if (isset($_GET["download_excel"])) {
 
                 window.clearInterval( downloadTimer );
             }
+            trial --;
         }, 1000 );
     });
 

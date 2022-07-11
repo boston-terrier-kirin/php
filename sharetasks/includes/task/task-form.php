@@ -51,10 +51,23 @@
         </div>
         <div class="col-sm col-lg-6 mb-3">
             <label class="form-label" for="status">ステータス</label>
-            <select class="form-select" name="status" id="status">
-                    <option value="予定">予定</option>
-                    <option value="進行中">進行中</option>
-                    <option value="完了">完了</option>
+            <select class="form-select" name="status" id="status" value="<?= Util::escape($data["status"]); ?>">
+                    <!-- TODO：もうちょっと工夫が必要 -->
+                    <?php if ($data["status"] == "予定") : ?>
+                        <option selected value="予定">予定</option>
+                    <?php else : ?>
+                        <option value="予定">予定</option>
+                    <?php endif; ?>
+                    <?php if ($data["status"] == "進行中") : ?>
+                        <option selected value="進行中">進行中</option>
+                    <?php else : ?>
+                        <option value="進行中">進行中</option>
+                    <?php endif; ?>
+                    <?php if ($data["status"] == "完了") : ?>
+                        <option selected value="完了">完了</option>
+                    <?php else : ?>
+                        <option value="完了">完了</option>
+                    <?php endif; ?>
             </select>
             <span id="status_err" class="invalid-feedback"></span>
         </div>
