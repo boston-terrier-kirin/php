@@ -2,6 +2,22 @@
 require_once("../bootstrap.php");
 
 Auth::requireLogin();
+
+if (isset($_GET["download_excel"])) {
+    $filePath = UPLOAD_FOLDER . "/94/abhishek-tiwari-QOR1p5aaFMQ-unsplash.jpg";
+
+    $media_type = (new finfo())->file($filePath, FILEINFO_MIME_TYPE) ?? 'application/octet-stream';
+    
+    header('Content-Type: ' . $media_type);
+    header('X-Content-Type-Options: nosniff');
+    header('Content-Length: ' . filesize($filePath));
+    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+    
+    while (ob_get_level()) ob_end_clean();
+    readfile($filePath);
+    
+    exit;
+}
 ?>
 
 <?php require_once APPROOT . "/includes/shared/header.php"; ?>
@@ -12,13 +28,41 @@ Auth::requireLogin();
         <a class="btn btn-primary" href="<?= URLROOT ?>/task/new-task">
             <i class="bi bi-pencil"></i> 新しいタスク
         </a>
+        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#searchModal">
+            <i class="bi bi-search"></i> 検索条件設定
+        </button>
     </div>
     <div id="task-table"></div>
+</div>
+
+<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">検索条件設定</h5>
+            </div>
+            <div class="modal-body">
+                <form method="get">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">ステータス:</label>
+                        <input type="text" class="form-control" name="status" id="status">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="download_excel" name="download_excel" data-bs-dismiss="modal" class="btn btn-success">Excelダウンロード</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+            </div>
+        </div>
+  </div>
 </div>
 
 <?php require_once APPROOT . "/includes/shared/script.php"; ?>
 
 <script>
+
     function formatTaskId(cell, formatterParams){
         const value = cell.getValue();
         return "<a href='<?= URLROOT ?>/task/edit-task?task_id=" + value +  "'>" + value + "</a>";

@@ -125,7 +125,7 @@
                             }
                     ?>
                         <li class="list-group-item d-flex">
-                            <a class="link-dark me-auto" style="text-decoration: none" href="<?= URLROOT ?>/task/download-task?task_id=<?= $taskId; ?>&attach_id=<?= $attach["attach_id"] ?>">
+                            <a class="link-dark me-auto" style="text-decoration: none" href="<?= URLROOT ?>/task/download-attach?task_id=<?= $taskId; ?>&attach_id=<?= $attach["attach_id"] ?>">
                                 <i class="bi bi-download"></i> <?= $attach["file_name"] ?>
                             </a>
                             <input class="form-check-input" type="checkbox" name="delete_attach_ids[]" value="<?= $attach["attach_id"] ?>" <?= $checked ?>/> 
