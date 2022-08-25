@@ -14,10 +14,12 @@
 <?php if (!empty($_SESSION["SUCCESS_MESSAGE"])) {
     $globalSuccess = $_SESSION["SUCCESS_MESSAGE"];
 ?>
-    <div id="success-msg" class="alert alert-success p-2">
-        <?php foreach($globalSuccess as $success): ?>
-            <p class="mb-0"><i class="bi bi-info-circle-fill"></i> <?= $success ?></p>
-        <?php endforeach ?>
+    <div class="position-fixed top-0 start-50 p-2 opacity-25" style="z-index: 5">
+        <div id="success-msg" class="alert alert-success p-2">
+            <?php foreach($globalSuccess as $success): ?>
+                <p class="mb-0"><i class="bi bi-info-circle-fill"></i> <?= $success ?></p>
+            <?php endforeach ?>
+        </div>
     </div>
 <?php
         unset($_SESSION["SUCCESS_MESSAGE"]);
