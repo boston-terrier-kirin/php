@@ -1,0 +1,47 @@
+/* SUCCESS */
+.alert {
+  padding: 0.5rem 0.5rem;
+  opacity: 0.9;
+}
+
+#success-container {
+  /* successはgmailを真似て、下からスライドイン・スライドアウトする */
+  position: absolute;
+  bottom: -100px;
+  left: 30px;
+  z-index: 100;
+
+  transition: transform 0.5s ease-in-out;
+}
+
+#success-container .alert {
+  min-width: 400px;
+}
+
+#success-container.show {
+  transform: translateY(-130px);
+}
+
+/* ALERT */
+/* alertはスライドイン・スライドアウトさせずに、画面上部に常に表示したいので、absoluteでは表示場所的に厳しい */
+#alert-container {
+  display: none;
+}
+
+/* display:none -> block ではtransitionが効かないので、いったんblockにしてから、animationで少し動かす */
+#alert-container.show {
+  display: block;
+  animation: show-alert 0.3s ease-in;
+}
+
+@keyframes show-alert {
+  0% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
