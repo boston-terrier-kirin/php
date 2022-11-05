@@ -9,9 +9,4 @@ function exceptionHandler($exception) {
     echo "Catch Exception: " . $exception->getMessage();
 }
 set_exception_handler("exceptionHandler");
-
-$i = 1 / 0;
-
-$datetime = new DateTime("invalid");
-
 ?>
