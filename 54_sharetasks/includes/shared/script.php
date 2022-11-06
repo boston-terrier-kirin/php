@@ -6,7 +6,7 @@
     if (successMessage) {
         setTimeout(function() {
             successMessage.classList.add("d-none");
-        }, 3000);
+        }, 5000);
     }
 
     <?php if (isset($errors) && !empty($errors)) : ?>
