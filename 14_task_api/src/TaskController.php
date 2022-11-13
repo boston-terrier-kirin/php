@@ -1,21 +1,23 @@
 <?php
 class TaskController {
+    private $userId;
     private $taskGateway;
 
-    public function __construct($taskGateway) {
+    public function __construct($userId, $taskGateway) {
+        $this->userId = $userId;
         $this->taskGateway = $taskGateway;
     }
 
     public function processRequest($method, $id) {
         if ($id == null) {
             if ($method == "GET") {
-                echo json_encode($this->taskGateway->getAll());
+                echo json_encode($this->taskGateway->getAll($this->userId));
             } elseif ($method == "POST") {
                 $data = (array) json_decode(file_get_contents("php://input"), true);
                 if ($data) {
                     http_response_code(201);
                     echo json_encode([
-                        "id" => $this->taskGateway->create($data)
+                        "id" => $this->taskGateway->create($this->userId, $data)
                     ]);
                 } else {
                     http_response_code(400);
@@ -25,7 +27,7 @@ class TaskController {
                 header("Allow: GET, POST");
             }
         } else {
-            $data = $this->taskGateway->get($id);
+            $data = $this->taskGateway->get($this->userId, $id);
             if (!$data) {
                 http_response_code(404);
                 echo json_encode([
@@ -40,14 +42,14 @@ class TaskController {
                 $data = (array) json_decode(file_get_contents("php://input"), true);
                 if ($data) {
                     echo json_encode([
-                        "rows_updated" => $this->taskGateway->update($id, $data)
+                        "rows_updated" => $this->taskGateway->update($this->userId, $id, $data)
                     ]);
                 } else {
                     http_response_code(400);
                 }
             } elseif ($method == "DELETE") {
                 echo json_encode([
-                    "rows_deleted" => $this->taskGateway->delete($id)
+                    "rows_deleted" => $this->taskGateway->delete($this->userId, $id)
                 ]);
             } else {
                 http_response_code(405);
