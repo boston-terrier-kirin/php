@@ -1,3 +1,8 @@
+# register
+
+ここで api_key を GET する。
+http://localhost:8090/task_api/register.php/
+
 # create
 
 POST http://localhost:8090/task_api/tasks/

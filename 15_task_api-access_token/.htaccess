@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+
+# これで何が来てもindex.phpが実行される。
+RewriteRule . index.php [L]
+
+# HTTP_AUTHORIZATIONが常に付くのでエラーになりにくい
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
