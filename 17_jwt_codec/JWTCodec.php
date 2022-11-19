@@ -1,5 +1,12 @@
 <?php
 class JWTCodec {
+
+    private $key;
+
+    public function __construct($key) {
+        $this->key = $key;
+    }
+
     public function encode($payload) {
         $header = json_encode([
             "typ" => "JWT",
@@ -12,11 +19,30 @@ class JWTCodec {
         
         $signature = hash_hmac("sha256",
                                 $header . "." . $payload,
-                                "5A7234753778214125442A472D4A614E645267556B58703273357638792F423F",
+                                $this->key,
                                 true);
         $signature = $this->base64urlEncode($signature);
 
         return $header . "." . $payload . "." . $signature;
+    }
+
+    public function decode($token) {
+        $parts = explode(".", $token);
+        $header = $parts[0];
+        $payload = $parts[1];
+        $signature_from_token = $parts[2];
+
+        $signature = hash_hmac("sha256",
+                                $header . "." . $payload,
+                                $this->key,
+                                true);
+        $signature_from_token = $this->base64urlDecode($signature_from_token);
+
+        if (!hash_equals($signature, $signature_from_token)) {
+            throw new Exception("Invalid token");
+        }
+
+        return json_decode($this->base64urlDecode($payload), true);
     }
 
     private function base64urlEncode($text) {
@@ -24,6 +50,14 @@ class JWTCodec {
             ["+", "/", "="],
             ["-", "_", ""],
             base64_encode($text)
+        );
+    }
+
+    private function base64urlDecode($text) {
+        return base64_decode(str_replace(
+            ["-", "_"],
+            ["+", "/"],
+            $text)
         );
     }
 }
