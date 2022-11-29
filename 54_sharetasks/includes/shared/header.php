@@ -11,17 +11,17 @@
     <title><?= SITENAME ?></title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav id="header" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <div class="container d-flex">
             <a class="navbar-brand mb-0 h1 me-auto" href="<?= URLROOT ?>/task/home"><i class="bi bi-list-task"></i> <?= SITENAME ?></a>
             <ul class="navbar-nav align-items-center">
                 <?php if (Auth::isLoggedIn()): ?>
                     <li class="nav-item text-light me-3">
-                        <i class="bi bi-person-fill"></i> <?= Auth::getUser() ?>
+                        <i class="bi bi-person-fill"></i> <span id="username"><?= Auth::getUser() ?></span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="<?= URLROOT ?>/user/logout"><i class="bi bi-box-arrow-right"></i> Log out</a>
+                        <a class="nav-link active" id="logout" href="<?= URLROOT ?>/user/logout"><i class="bi bi-box-arrow-right"></i> Log out</a>
                     </li>
                 <?php endif; ?>
             </ul>

@@ -44,7 +44,7 @@ if (isset($_GET["download_excel"])) {
 <div class="container">
     <?php require_once APPROOT . "/includes/shared/message.php"; ?>
     <div class="mb-3">
-        <a class="btn btn-primary" href="<?= URLROOT ?>/task/new-task">
+        <a class="btn btn-primary" id="new-task" href="<?= URLROOT ?>/task/new-task">
             <i class="bi bi-pencil"></i> 新しいタスク
         </a>
         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#searchModal">

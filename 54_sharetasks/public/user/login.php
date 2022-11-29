@@ -60,7 +60,7 @@ if (isset($_POST["login"])) {
                                 <button name="login" class="btn btn-success">Login</button>
                             </div>
                             <div class="d-grid col-6 mx-auto">
-                                <a href="<?= URLROOT ?>/user/register" name="register" class="btn btn-secondary">No account? Register</a>
+                                <a href="<?= URLROOT ?>/user/register" name="register" id="register" class="btn btn-secondary">No account? Register</a>
                             </div>
                         </div>
                     </form>

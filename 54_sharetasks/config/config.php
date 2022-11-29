@@ -9,7 +9,7 @@ define("SQL_TRACE", true);
 define("SQL_TRACE_FILE", "D:/xampp-1.8.1/htdocs/sql.log");
 
 define("APPROOT", dirname(dirname(__FILE__)));
-define("URLROOT", "http://localhost/sharetasks");
+define("URLROOT", "http://localhost:8090/sharetasks");
 define("SITENAME", "ShareTasks");
 
 define("UPLOAD_FOLDER", APPROOT . "/uploads");

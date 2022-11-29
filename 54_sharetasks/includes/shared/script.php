@@ -22,6 +22,7 @@
 
             if (targetSpan) {
                 targetSpan.innerHTML = message;
+                targetSpan.setAttribute("role", "alert");
             }
         }
     <?php endif; ?>
