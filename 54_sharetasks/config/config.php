@@ -3,7 +3,7 @@ define("DB_HOST", "localhost");
 define("DB_NAME", "php_sharetask");
 define("DB_USER", "root");
 define("DB_PASS", "root");
-define("DB_CHARSET", "utf8");
+define("DB_CHARSET", "utf8mb4");
 
 define("SQL_TRACE", true);
 define("SQL_TRACE_FILE", "D:/xampp-1.8.1/htdocs/sql.log");
