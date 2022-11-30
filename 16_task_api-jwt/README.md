@@ -8,65 +8,71 @@ http://localhost:8090/task_api/register.php/
 ここで access token を GET する。
 POST http://localhost:8090/task_api/login.php/
 
-#### body
+#### request body
 
+```
 {
-"username": "kohei",
-"password": "111111"
+    "username": "kohei",
+    "password": "111111"
 }
+```
+
+#### response
+
+```
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsIm5hbWUiOiJtYXdhbiIsImV4cCI6MTY2OTg0NjYyNH0.cvTaAB5kY56I6cUS0kgQtQfL3BSukGp9zy1Z2PZnXSI",
+    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsImV4cCI6MTY3MDI3ODAyNH0.FnNaMrjBmXV1DQbB0sNWU8oj-elVPRKR45Vi655K4DQ"
+}
+```
 
 # create
 
 POST http://localhost:8090/task_api/tasks/
 
-#### header
+#### request header
 
-Authorization: Bearer eyJpZCI6NSwibmFtZSI6ImtvaGVpIn0=
+```
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsIm5hbWUiOiJtYXdhbiIsImV4cCI6MTY2OTg0NjYyNH0.cvTaAB5kY56I6cUS0kgQtQfL3BSukGp9zy1Z2PZnXSI
+```
 
-#### body
+#### response body
 
+```
 {
-"name": "TEST POST#1",
-"priority": 1,
-"is_completed":0
+    "name": "TEST POST#1",
+    "priority": 1,
+    "is_completed":0
 }
+```
 
-# update
+#### response
 
-PATCH http://localhost:8090/task_api/tasks/2
-
-#### header
-
-Authorization: Bearer eyJpZCI6NSwibmFtZSI6ImtvaGVpIn0=
-
-#### body
-
+```
 {
-"name": "TEST POST#1",
-"priority": 1,
-"is_completed":0
+    "id": "9"
 }
+```
 
-# get all
+# refresh
 
-GET http://localhost:8090/task_api/tasks/
+POST http://localhost:8090/task_api/refresh.php
 
-#### header
+#### request body
 
-Authorization: Bearer eyJpZCI6NSwibmFtZSI6ImtvaGVpIn0=
+login.php の refresh token を使う
 
-# get
+```
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsImV4cCI6MTY3MDI3ODM3OX0.z9VqHFsOB35_tU0alVBjNzy26INo1Ow0IDAWyJOJfEQ"
+}
+```
 
-GET http://localhost:8090/task_api/tasks/7
+#### response
 
-#### header
-
-Authorization: Bearer eyJpZCI6NSwibmFtZSI6ImtvaGVpIn0=
-
-# delete
-
-DELETE http://localhost:8090/task_api/tasks/7
-
-#### header
-
-Authorization: Bearer eyJpZCI6NSwibmFtZSI6ImtvaGVpIn0=
+```
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsIm5hbWUiOiJtYXdhbiIsImV4cCI6MTY2OTg0NzA4M30.GQZdJbpGJwb36_bub8UNcmlhmdP953I8KeO90uVBCx0",
+    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsImV4cCI6MTY3MDI3ODQ4M30.vdypul5XVkXvomEAT5-x9qc_0PlToe-wuQmUNC6nfqI"
+}
+```
