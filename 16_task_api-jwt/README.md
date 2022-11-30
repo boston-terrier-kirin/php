@@ -36,7 +36,7 @@ POST http://localhost:8090/task_api/tasks/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsIm5hbWUiOiJtYXdhbiIsImV4cCI6MTY2OTg0NjYyNH0.cvTaAB5kY56I6cUS0kgQtQfL3BSukGp9zy1Z2PZnXSI
 ```
 
-#### response body
+#### request body
 
 ```
 {
@@ -75,4 +75,28 @@ login.php の refresh token を使う
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsIm5hbWUiOiJtYXdhbiIsImV4cCI6MTY2OTg0NzA4M30.GQZdJbpGJwb36_bub8UNcmlhmdP953I8KeO90uVBCx0",
     "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsImV4cCI6MTY3MDI3ODQ4M30.vdypul5XVkXvomEAT5-x9qc_0PlToe-wuQmUNC6nfqI"
 }
+```
+
+# get_all
+
+GET http://localhost:8090/task_api/tasks/
+
+#### request header
+
+```
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsIm5hbWUiOiJtYXdhbiIsImV4cCI6MTY2OTg0NjYyNH0.cvTaAB5kY56I6cUS0kgQtQfL3BSukGp9zy1Z2PZnXSI
+```
+
+#### response
+
+```
+[
+  {
+    id: 7,
+    name: 'TEST POST#1 - UPDATED!!',
+    priority: 1,
+    is_completed: 0,
+    user_id: 5
+  }
+]
 ```
