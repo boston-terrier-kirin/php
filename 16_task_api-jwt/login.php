@@ -32,7 +32,7 @@ if (!$user) {
     exit;
 }
 
-if (password_verify($data["password"], $user["password"])) {
+if (!password_verify($data["password"], $user["password"])) {
     http_response_code(401);
     echo json_encode([
         "message" => "Invalid credentials -2"
@@ -40,24 +40,28 @@ if (password_verify($data["password"], $user["password"])) {
     exit;
 }
 
+// time()は秒単位なので、同じユーザIDで1秒以内にtokenを作ると、同じaccessTokenになる。
+$accessTokenExp = time() + 600; 
 $payload = [
     "sub" => $user["id"],
     "name" => $user["name"],
-    "exp" => time() + 600
+    "exp" => $accessTokenExp
 ];
 
 $codec = new JWTCodec($_ENV["SECRET_KEY"]);
 $accessToken = $codec->encode($payload);
 
-$expiry = time() + 432000;
+// time()は秒単位なので、同じユーザIDで1秒以内にtokenを作ると、同じrefreshTokenになる。
+// refreshTokenが重複するとDBでキー重複になるので、rand(-600, 600)で幅を持たせる。
+$refreshTokenExp = time() + 432000 + rand(-600, 600);
 $refreshToken = $codec->encode([
     "sub" => $user["id"],
-    "exp" => $expiry
+    "exp" => $refreshTokenExp
 ]);
 
 echo json_encode([
     "access_token" => $accessToken,
-    "refresh_token" => $refreshToken
+    "refresh_token" => $refreshToken,
 ]);
 
 /**
@@ -67,4 +71,4 @@ echo json_encode([
  * 定期的にリフレッシュさせるのが目的らしい。
  */
 $refreshTokenGateway = new RefreshTokenGateway($database, $_ENV["SECRET_KEY"]);
-$refreshTokenGateway->create($refreshToken, $expiry);
+$refreshTokenGateway->create($refreshToken, $refreshTokenExp);
