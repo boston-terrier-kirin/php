@@ -1,5 +1,6 @@
 <?php
 require_once("../bootstrap.php");
+http_response_code(500);
 ?>
 
 <?php require_once APPROOT . "/includes/shared/header.php"; ?>
