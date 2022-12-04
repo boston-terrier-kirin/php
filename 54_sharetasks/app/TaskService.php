@@ -138,8 +138,10 @@ class TaskService {
 
             $taskId = $this->insert($data);
 
-            $attachService = new AttachService();
-            $attachService->uploadFile($taskId, $data["upload_file"]);
+            if (isset($data["upload_file"])) {
+                $attachService = new AttachService();
+                $attachService->uploadFile($taskId, $data["upload_file"]);
+            }
 
             $this->db->commit();
 

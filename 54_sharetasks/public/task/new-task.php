@@ -21,7 +21,10 @@ if (isset($_POST["save"])) {
             $data[$key] = $value;
         } 
     }
-    $data["upload_file"] = $_FILES["upload_file"];
+
+    if (isset($_FILES["upload_file"])) {
+        $data["upload_file"] = $_FILES["upload_file"];
+    }
 
     $taskService = new TaskService();
     $errors = $taskService->validate($data);
