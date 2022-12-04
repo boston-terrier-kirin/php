@@ -23,7 +23,6 @@ if (isset($_POST["login"])) {
             $_SESSION["is_logged_in"] = true;
             $_SESSION["username"] = $data["username"];
 
-            Util::registerMessage("Welcome back, " . $data['username']);
             Util::redirect("/task/home");
         } else {
             $errors["username"] = "Invalid Credentials.";

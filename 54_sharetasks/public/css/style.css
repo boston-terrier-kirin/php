@@ -24,25 +24,62 @@
 
 #error-msg {
   display: block;
-  animation: show-message 0.3s ease-in;
+  animation: show-error 0.5s ease-in-out;
 }
 
 #success-msg {
   position: absolute;
-  bottom: 30px;
-  left: 30px;
+  bottom: 20px;
+  left: 50px;
   z-index: 100;
   min-width: 400px;
-  opacity: 0.9;
-  animation: show-message 0.3s ease-in;
+  opacity: 0.95;
+  background-color: #171717;
+  box-shadow: 0px 10px 10px -6px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  animation: show-message 0.5s ease-in-out;
+}
+
+#close-success {
+  padding: 5px 10px;
+  border-radius: 50px;
+  transition: all 0.5s;
+}
+
+#close-success:hover {
+  opacity: 0.7;
+  background-color: #262626;
+}
+
+@keyframes show-error {
+  0% {
+    transform: translateY(-5px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(0);
+    opacity: 1;
+  }
 }
 
 @keyframes show-message {
   0% {
-    transform: translateY(-5px);
+    transform: translateY(100px);
+  }
+  25% {
+    transform: translateY(50px);
+    opacity: 0.75;
   }
   50% {
-    transform: translateY(3px);
+    transform: translateY(5px);
+    opacity: 0.85;
+  }
+  75% {
+    transform: translateY(-15px);
   }
   100% {
     transform: translate(0);

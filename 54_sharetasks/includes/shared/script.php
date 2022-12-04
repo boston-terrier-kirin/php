@@ -6,7 +6,14 @@
     if (successMessage) {
         setTimeout(function() {
             successMessage.classList.add("d-none");
-        }, 5000);
+        }, 10000);
+
+        const closeSuccess = document.getElementById("close-success");
+        if (closeSuccess) {
+            closeSuccess.addEventListener("click", ()=> {
+                successMessage.classList.add("d-none");
+            });
+        }
     }
 
     <?php if (isset($errors) && !empty($errors)) : ?>
